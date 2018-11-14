@@ -21,27 +21,13 @@
 log="/var/log/nsm/so-curator-closed-delete.log"
 index_usage=$(du -s /nsm/elasticsearch/nodes/0/indices | awk '{print $1}')
 usage_gb=$(($index_usage / 10**6))
-num_procs=$(ps aux | grep /usr/sbin/so-curator-closed-delete | grep -v grep | grep -v so-elastic | wc -l)
+num_procs=$(pgrep -fc "/bin/bash /usr/sbin/so-curator-closed-delete")
 
-# If logrotate script doesn't already exist, create it
-FILE="/etc/logrotate.d/so-curator-closed-delete"
-if ! [ -f ${FILE} ]; then
-        cat << EOF > ${FILE}
-/var/log/nsm/so-curator-closed-delete.log {
-    daily
-    rotate 7
-    copytruncate
-    compress
-    missingok
-    notifempty
-}
-EOF
-fi
-
-if [[ $num_procs -gt 2 ]]; then
+if [[ ${num_procs} -gt 1 ]]; then
         echo "$(date) - Process already running...will wait for current process to finish before running again..." >> $log
         exit 0
 else
+	#while true; do
 	while [[ "$usage_gb" -ge "$LOG_SIZE_LIMIT" ]]; do
 	
 		# Create an array for index key and name
@@ -65,7 +51,7 @@ else
 	
 		# Get index id from filetime
 		index_id=${ifiles[${filetime}]}
-		
+	
 		# Get index name from index id 
 		index_name=${indices[${index_id}]}
 
@@ -80,6 +66,7 @@ else
 		unset ifiles
 		unset ifilesort
 	done
+
 	if [[ "$usage_gb" -lt "$LOG_SIZE_LIMIT" ]]; then
 		echo "$(date) - $usage_gb GB used...less than LOG_SIZE_LIMIT ($LOG_SIZE_LIMIT GB), so not deleting anything." >> $log
 	fi
