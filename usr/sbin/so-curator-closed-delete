@@ -21,6 +21,7 @@
 log="/var/log/nsm/so-curator-closed-delete.log"
 index_usage=$(du -s /nsm/elasticsearch/nodes/0/indices | awk '{print $1}')
 usage_gb=$(($index_usage / 10**6))
+num_procs=$(ps aux | grep /usr/sbin/so-curator-closed-delete | grep -v grep | grep -v so-elastic | wc -l)
 
 # If logrotate script doesn't already exist, create it
 FILE="/etc/logrotate.d/so-curator-closed-delete"
@@ -37,48 +38,49 @@ if ! [ -f ${FILE} ]; then
 EOF
 fi
 
-while [[ "$usage_gb" -ge "$LOG_SIZE_LIMIT" ]]; do
+if [[ $num_procs -gt 2 ]]; then
+        echo "$(date) - Process already running...will wait for current process to finish before running again..." >> $log
+        exit 0
+else
+	while [[ "$usage_gb" -ge "$LOG_SIZE_LIMIT" ]]; do
 	
-	# Create an array for index key and name
-	declare -A indices
-	for i in $(curl -s ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/_cat/indices | grep -E '^[ \t]+close.*' | sort -n | awk '{print $2 "|" $3}'); do
-		iname=$(echo $i | awk -F'[|]' '{print $1}')
-		iid=$(echo $i | awk -F'[|]' '{print $2}')
-		indices[$iid]=$iname
+		# Create an array for index key and name
+		declare -A indices
+		for i in $(curl -s ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/_cat/indices | grep -E '^[ \t]+close.*' | sort -n | awk '{print $2 "|" $3}'); do
+			iname=$(echo $i | awk -F'[|]' '{print $1}')
+			iid=$(echo $i | awk -F'[|]' '{print $2}')
+			indices[$iid]=$iname
+		done
+
+		# Find oldest files in index directories, and compile an array with index key and file epoch
+		declare -A ifiles 
+		for i in ${!indices[@]}; do
+			oldest_file=$(find /nsm/elasticsearch/nodes/0/indices/$i/0/index/ -type f -printf "%C@\n"  | sort | head -n 1)
+			ifiles[$oldest_file]=$i
+		done
+
+		# Sort files and retrieve the oldest
+		ifilesort=($(for i in ${!ifiles[@]}; do echo $i; done | sort)) 
+		filetime=$(echo ${ifilesort})	
+	
+		# Get index id from filetime
+		index_id=${ifiles[${filetime}]}
+		
+		# Get index name from index id 
+		index_name=${indices[${index_id}]}
+
+		# Delete index
+		curl -s -XDELETE ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/$index_name
+
+		# Write to log	
+        	echo "$(date) - $usage_gb GB used...exceeds LOG_SIZE_LIMIT ($LOG_SIZE_LIMIT GB) - Index $index_name deleted ..." >> $log
+	
+		# Unset arrays in case we have to run again
+		unset indices
+		unset ifiles
+		unset ifilesort
 	done
-
-	# Find oldest files in index directories, and compile an array with index key and file epoch
-	declare -A ifiles 
-	for i in ${!indices[@]}; do
-		oldest_file=$(find /nsm/elasticsearch/nodes/0/indices/$i/0/index/ -type f -printf "%C@\n"  | sort | head -n 1)
-		ifiles[$oldest_file]=$i
-	done
-
-	# Sort files and retrieve the oldest
-	ifilesort=($(for i in ${!ifiles[@]}; do echo $i; done | sort)) 
-	filetime=$(echo ${ifilesort})	
-	
-	# Get index id from filetime
-	index_id=${ifiles[${filetime}]}
-	
-	# Get index name from index id 
-	index_name=${indices[${index_id}]}
-	#echo $index_name
-	#echo $index_id
-
-	# Delete index
-	curl -s -XDELETE ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/$index_name
-
-	# Write to log	
-        echo "$(date) - $usage_gb GB used...exceeds LOG_SIZE_LIMIT ($LOG_SIZE_LIMIT GB) - Index $index_name deleted ..." >> $log
-	
-	# Unset arrays in case we have to run again
-	unset indices
-	unset ifiles
-	unset ifilesort
-	
-done
-
-if [[ "$usage_gb" -lt "$LOG_SIZE_LIMIT" ]]; then
-	echo "$(date) - $usage_gb GB used...less than LOG_SIZE_LIMIT ($LOG_SIZE_LIMIT GB), so not deleting anything." >> $log
+	if [[ "$usage_gb" -lt "$LOG_SIZE_LIMIT" ]]; then
+		echo "$(date) - $usage_gb GB used...less than LOG_SIZE_LIMIT ($LOG_SIZE_LIMIT GB), so not deleting anything." >> $log
+	fi
 fi
