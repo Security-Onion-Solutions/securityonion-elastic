@@ -23,6 +23,7 @@
 
 
 current_rules=$(sudo ls /etc/elastalert/rules/)
+resultstolog=""
 echo
 echo "This script will allow you to test an Elastalert rule."
 echo
@@ -35,9 +36,11 @@ echo
 echo "Please enter the file path and rule name you want to test."
 read -e rulename
 
-echo "The results can be rather long.  Would you like to write the results to a file? (Y/N)"
-read resultstolog
-
+while [[ ${resultstolog,,} != "y" ]] && [[ ${resultstolog,,} != "n" ]]; do
+  echo "The results can be rather long.  Would you like to write the results to a file? (Y/N)"
+  read resultstolog
+done
+  
 if [ ${resultstolog,,} = "y" ] ; then
 	echo "Please enter the file path and file name."
 	read -e filesavelocation
