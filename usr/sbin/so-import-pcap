@@ -128,10 +128,10 @@ if [ $# -eq 0 ]; then
 fi
 
 # verify that all parameters are files
-for i in $@; do
-	if ! [ -f $i ]; then
+for i in "$@"; do
+	if ! [ -f "$i" ]; then
 		usage
-		echo "$i is not a valid file!"
+		echo "\"$i\" is not a valid file!"
 		exit
 	fi
 done
@@ -334,7 +334,7 @@ BROLOGDIR=$(mktemp -d -p $BRODIR -t bro-XXXXXXXX)
 chown $(stat $BRODIR -c %u:%g) $BROLOGDIR
 chmod $(stat $BRODIR -c %a) $BROLOGDIR
 cd $BROLOGDIR
-/opt/bro/bin/bro -r $PCAP local >/dev/null 2>&1
+/opt/bro/bin/bro -C -r $PCAP local >/dev/null 2>&1
 cd - >/dev/null
 
 # split traffic into daily directories so that sguil's pcap_agent can find it
