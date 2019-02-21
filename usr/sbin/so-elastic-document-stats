@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# Copyright 2014,2015,2016,2017,2018,2019 Security Onion Solutions, LLC
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+source /etc/nsm/securityonion.conf
+
+# If Elasticsearch is not enabled, then exit immediately
+[ "$ELASTICSEARCH_ENABLED" != "yes" ] && exit
+
+if [ -z "$1" ]; then
+	echo "Latest document:"
+	curl -s -XPOST "http://$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/logstash-*/doc/_search?pretty" \
+		-H 'Content-Type: application/json' \
+		-d'{ "sort": { "@timestamp" : "desc" }, "size":1 }' | sed 's/\\t/\t/g'
+else
+	echo "Latest event_type:\"$1\" document:"
+	curl -s -XPOST "http://$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/logstash-*/doc/_search?pretty" \
+		-H 'Content-Type: application/json' \
+		-d"{ \"query\": { \"term\": { \"event_type\": \"$1\" } }, \"sort\": { \"@timestamp\" : \"desc\" }, \"size\":1 }" | sed 's/\\t/\t/g'
+fi
+echo
+
+if [ "$LOGSTASH_ENABLED" = "yes" ]; then
+	echo "Logstash pipeline statistics:"
+	curl -s -XGET "http://$LOGSTASH_HOST:$LOGSTASH_PORT/_node/stats/events?pretty"
+	echo
+  echo
+fi
+
+echo "Elasticsearch indices:"
+curl -s -XGET "http://$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_cat/indices/*logstash-*?v"
