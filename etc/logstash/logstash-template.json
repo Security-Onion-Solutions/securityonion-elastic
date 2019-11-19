@@ -873,6 +873,14 @@
             }
           }
         },
+        "destination_mac":{
+          "type":"text",
+          "fields":{
+            "keyword":{
+              "type":"keyword"
+            }
+          }
+        },
         "destination_port":{  
           "type":"long"
         },
@@ -1476,6 +1484,9 @@
               "type":"keyword"
             }
           }
+        },
+        "inner_vlan":{
+          "type":"long"
         },
         "integrity_level":{  
           "type":"text",
@@ -3068,6 +3079,14 @@
             }
           }
         },
+        "source_mac":{
+          "type":"text",
+          "fields":{
+            "keyword":{
+              "type":"keyword"
+            }
+          }
+        },
         "source_port":{  
           "type":"long"
         },
@@ -3605,6 +3624,9 @@
           "type":"long"
         },
         "virtual_host_length":{  
+          "type":"long"
+        },
+        "vlan":{
           "type":"long"
         },
         "warning":{  
