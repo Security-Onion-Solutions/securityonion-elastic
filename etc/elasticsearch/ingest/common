@@ -42,6 +42,7 @@
 		"target_field": "destination_geo",
 		"database_file": "GeoLite2-City.mmdb",
 		"ignore_missing": true, 
+		"ignore_failure": true,
 		"properties": ["ip", "country_name", "region_iso_code", "region_name", "city_name", "timezone", "location"]
 	}
     },
@@ -58,6 +59,7 @@
 		"target_field": "source_geo",
 		"database_file": "GeoLite2-City.mmdb",
 		"ignore_missing": true,
+		"ignore_failure": true,
 		"properties": ["ip", "country_name", "region_iso_code", "region_name", "city_name", "timezone", "location"]
 	}
     },
