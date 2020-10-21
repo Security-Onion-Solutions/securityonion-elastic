@@ -130,6 +130,11 @@ if [ ! -f /etc/elasticsearch/jvm.options ]; then
 	sed -i "s/^-Xmx.*/-Xmx$ES_HEAP_SIZE/" /etc/elasticsearch/jvm.options
 fi
 
+# Elasticsearch 7 JVM changes
+sed -i "s|^-XX:+UseConcMarkSweepGC|#-XX:+UseConcMarkSweepGC|g" 					/etc/elasticsearch/jvm.options
+sed -i "s|^-XX:CMSInitiatingOccupancyFraction=|#-XX:CMSInitiatingOccupancyFraction=|g" 		/etc/elasticsearch/jvm.options
+sed -i "s|^-XX:+UseCMSInitiatingOccupancyOnly|#-XX:+UseCMSInitiatingOccupancyOnly|g" 		/etc/elasticsearch/jvm.options
+
 # Elasticsearch ingest node parsers
 mkdir -p /etc/elasticsearch/ingest
 cp -av /opt/elastic/src/etc/elasticsearch/ingest/* /etc/elasticsearch/ingest
