@@ -9,3 +9,6 @@ elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 #xpack.monitoring.ui.container.elasticsearch.enabled: true
 logging.dest: /var/log/kibana/kibana.log
 telemetry.enabled: false
+uiSettings:
+  overrides:
+    "theme:darkMode": true
