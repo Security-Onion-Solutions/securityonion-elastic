@@ -100,6 +100,11 @@ else
 	# securityonion-elastic: migrate script.* settings from elasticsearch.yml.bak to elasticsearch.yml #1676
 	# https://github.com/Security-Onion-Solutions/security-onion/issues/1676
 	grep "^script.*:" $ES_YAML_BAK >> $ES_YAML
+
+	# securityonion-elastic: Migrate indices.* settings for elasticsearch.yml #1786
+	# https://github.com/Security-Onion-Solutions/security-onion/issues/1786
+	grep "^indices.*:" $ES_YAML_BAK >> $ES_YAML
+
 fi
 
 # Get total installed memory
