@@ -8,7 +8,6 @@
     "index.refresh_interval":"30s"
   },
   "mappings":{  
-    "doc":{  
        "dynamic": false,
        "date_detection": false,
        "properties":{  
@@ -792,19 +791,8 @@
         "destination_geo.ip":{  
           "type":"ip"
         },
-        "destination_geo.latitude":{  
-          "type":"long"
-        },
         "destination_geo.location":{  
           "type":"geo_point"
-        },
-        "destination_geo.longitude":{  
-          "type":"long",
-          "fields":{  
-            "keyword":{  
-              "type":"keyword"
-            }
-          }
         },
         "destination_geo.postal_code":{  
           "type":"text",
@@ -1240,14 +1228,8 @@
         "geoip.ip":{  
           "type":"ip"
         },
-        "geoip.latitude":{  
-          "type":"long"
-        },
         "geoip.location":{  
           "type":"geo_point"
-        },
-        "geoip.longitude":{  
-          "type":"long"
         },
         "get_bulk_requests":{  
           "type":"text",
@@ -3024,14 +3006,8 @@
         "source_geo.ip":{  
           "type":"ip"
         },
-        "source_geo.latitude":{  
-          "type":"long"
-        },
         "source_geo.location":{  
           "type":"geo_point"
-        },
-        "source_geo.longitude":{  
-          "type":"long"
         },
         "source_geo.postal_code":{  
           "type":"text",
@@ -3670,6 +3646,5 @@
           }
         }
       }
-    }
   }
 }
