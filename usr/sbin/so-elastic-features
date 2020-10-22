@@ -58,6 +58,6 @@ fi
 echo "Please wait while switching to Elastic Features."
 
 sed -i 's|^DOCKERHUB="securityonionsolutions|DOCKERHUB="securityonionsolutionselas|g' $ELASTICDOWNLOAD
-( echo; cat ) | soup # auto-respond to first prompt only
+soup
 
 header "Once containers have started, you should have access to Elastic Features."
