@@ -22,6 +22,10 @@
 # Check for error conditions
 if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ -f $ELASTICSEARCH_ACCOUNTS ]; then
 
+	echo
+	header "Updating Elastic auth config..."
+	echo
+
 	COUNT=0
 	ELASTICSEARCH_CONNECTED="no"
 	echo -n "Waiting for ElasticSearch..."
@@ -44,7 +48,6 @@ if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ 
 
 	else
 
-		header "Updating Elastic auth config..."
 
 		curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/so_user_read_only" -H 'Content-Type: application/json' -d'
 {
@@ -68,8 +71,8 @@ if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ 
 }
 '
 		echo; echo
-
 		header "Elastic auth config update complete!"
+		echo
 
 	fi
 
