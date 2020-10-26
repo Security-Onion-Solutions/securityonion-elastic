@@ -234,7 +234,7 @@
         "version": 1,
         "timeRestore": false,
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"filter\":[],\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"default_field\":\"*\",\"query\":\"*\"}}}}"
+          "searchSourceJSON": "{\"highlightAll\":true,\"version\":true,\"query\":{\"query\":\"event_type: bro_ssh\",\"language\":\"lucene\"},\"filter\":[]}"
         }
       }
     }
