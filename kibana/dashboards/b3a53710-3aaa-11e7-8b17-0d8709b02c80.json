@@ -254,7 +254,7 @@
         "version": 1,
         "timeRestore": false,
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"highlightAll\":true,\"version\":true,\"query\":{\"query\":\"event_type: bro_smb\",\"language\":\"lucene\"},\"filter\":[]}"
+          "searchSourceJSON": "{\"highlightAll\":true,\"version\":true,\"query\":{\"query\":\"event_type:bro_smb_mapping OR event_type:bro_smb_files\",\"language\":\"lucene\"},\"filter\":[]}"
         }
       }
     }
