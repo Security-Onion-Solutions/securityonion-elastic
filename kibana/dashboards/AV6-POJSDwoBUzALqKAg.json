@@ -52,8 +52,8 @@
         "optionsJSON": "{\"darkTheme\":true,\"useMargins\":true}",
         "version": 1,
         "timeRestore": false,
-        "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"filter\":[],\"highlightAll\":true,\"version\":true,\"query\":{\"query\":{\"match_all\":{}},\"language\":\"lucene\"}}"
+	"kibanaSavedObjectMeta": {
+	  "searchSourceJSON":"{\"highlightAll\":true,\"version\":true,\"query\":{\"query\":\"\",\"language\":\"lucene\"},\"filter\":[]}"
         }
       }
     }
