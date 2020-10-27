@@ -3,6 +3,7 @@
 	  "defaultIndex": "*:logstash-*",
 	  "discover:sampleSize":"10",
 	  "dashboard:defaultDarkTheme":true,
+          "search:queryLanguage":"lucene",
 	  "theme:darkMode":true,
 	  "timepicker:timeDefaults":"{\n  \"from\": \"now-24h\",\n  \"to\": \"now\",\n  \"mode\": \"quick\"\n}"
 	}
