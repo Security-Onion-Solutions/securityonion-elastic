@@ -198,7 +198,7 @@
         "uiStateJSON": "{\"vis\":{\"defaultColors\":{\"0 - 0\":\"rgb(0,104,55)\",\"1 - 999999\":\"rgb(165,0,38)\"}}}",
         "version": 1,
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"index\":\"*:logstash-*\",\"query\":{\"query_string\":{\"query\":\"event_type:bro_dns AND highest_registered_domain:securityonion.net~ -securityonion.net\",\"analyze_wildcard\":true}},\"filter\":[]}"
+          "searchSourceJSON": "{\"index\":\"*:logstash-*\",\"query\":{\"query_string\":{\"query\":\"event_type:bro_dns AND highest_registered_domain:securityonion.net~ -highest_registered_domain:securityonion.net\",\"analyze_wildcard\":true}},\"filter\":[]}"
         }
       },
       "migrationVersion": {
