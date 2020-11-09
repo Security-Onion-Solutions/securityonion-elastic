@@ -69,6 +69,7 @@ if [ "$ELASTICSEARCH_ENABLED" = "yes" ]; then
                         --env "bootstrap.memory_lock=true" \
                         --env "http.host=0.0.0.0" \
                         --env "transport.host=127.0.0.1" \
+			--env "discovery.type=single-node" \
                         --publish $ELASTICSEARCH_PUBLISH_IP:9200:9200 \
                         --publish $ELASTICSEARCH_PUBLISH_IP:9300:9300 \
                         --ulimit memlock=-1:-1 \
