@@ -2,14 +2,15 @@
   "description" : "beats_sysmon",
   "processors" : [
     { "set":		{ "field": "event_type", "value": "sysmon"										} },
-    { "rename": 	{ "field": "event_data.User", 				"target_field": "username",		"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.DestinationPort",		"target_field": "destination_port",	"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.DestinationIp",			"target_field": "destination_ip",	"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.SourceIp",			"target_field": "source_ip",		"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.Image",				"target_field": "image_path",		"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.ParentImage",			"target_field": "parent_image_path",	"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.SourceHostname",			"target_field": "source_hostname",	"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.DestinationHostname",		"target_field": "destination_hostname",	"ignore_missing": true 	} },
-    { "rename": 	{ "field": "event_data.TargetFilename",			"target_field": "target_filename",	"ignore_missing": true 	} }
+    { "rename": 	{ "field": "winlog.event_data.User",			"target_field": "username",		"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.DestinationPort",		"target_field": "destination_port",	"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.DestinationIp",		"target_field": "destination_ip",	"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.SourceIp",		"target_field": "source_ip",		"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.SourcePort",		"target_field": "source_port",		"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.Image",			"target_field": "image_path",		"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.ParentImage",		"target_field": "parent_image_path",	"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.SourceHostname",		"target_field": "source_hostname",	"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.DestinationHostname",	"target_field": "destination_hostname",	"ignore_missing": true 	} },
+    { "rename": 	{ "field": "winlog.event_data.TargetFilename",		"target_field": "target_filename",	"ignore_missing": true 	} }
   ]
 }
