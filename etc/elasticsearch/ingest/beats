@@ -1,11 +1,11 @@
 {
   "description" : "beats",
   "processors" : [
-    { "rename":		{ "field": "host",	"target_field": "beat_host",	"ignore_missing": true	} },
+    { "rename":		{ "field": "host",			"target_field": "beat_host",		"ignore_missing": true	} },
     { "rename":		{ "field": "winlog.computer_name",	"target_field": "computer_name",	"ignore_missing": true	} },
-    { "rename":		{ "field": "winlog.event_data.ProcessId",	"target_field": "process_id",	"ignore_missing": true	} },
-    { "rename":		{ "field": "winlog.event_id",	"target_field": "event_id",	"ignore_missing": true	} },
-    { "rename":		{ "field": "winlog.user.name",	"target_field": "user.name",	"ignore_missing": true	} },
+    { "rename":		{ "field": "winlog.event_id",		"target_field": "event_id",		"ignore_missing": true	} },
+    { "rename":		{ "field": "winlog.process.pid",	"target_field": "process_id",		"ignore_missing": true	} },
+    { "rename":		{ "field": "winlog.user.name",		"target_field": "user.name",		"ignore_missing": true	} },
     { "pipeline":	{ "if": "ctx.event.provider == 'Microsoft-Windows-Sysmon'", "name": "beats_sysmon"	} },
     { "pipeline":	{ "name": "common" 								} }
   ]
