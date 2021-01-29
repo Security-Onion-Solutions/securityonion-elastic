@@ -82,7 +82,7 @@ else
 	echo "Applying Kibana template..."
 	curl ${ELASTICSEARCH_AUTH} -s -XPUT http://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/_template/kibana \
 	     -H 'Content-Type: application/json' \
-	     -d'{"index_patterns" : ".kibana", "settings": { "number_of_shards" : 1, "number_of_replicas" : 0 }, "mappings" : { "search": {"properties": {"hits": {"type": "integer"}, "version": {"type": "integer"}}}}}'
+	     -d'{"index_patterns" : ".kibana", "settings": { "number_of_shards" : 1, "number_of_replicas" : 0 } }'
 	echo
 
 	curl ${ELASTICSEARCH_AUTH} -s -XPUT "${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/.kibana/_settings" \
