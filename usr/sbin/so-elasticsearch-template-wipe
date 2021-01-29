@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# Copyright 2014,2015,2016,2017,2018,2019,2020 Security Onion Solutions, LLC
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+. /usr/sbin/so-elastic-common
+
+. /etc/nsm/securityonion.conf
+
+# Check for error conditions
+if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ -f $ELASTICSEARCH_ACCOUNTS ]; then
+
+	echo
+	header "Removing old logstash templates..."
+	echo
+
+	COUNT=0
+	ELASTICSEARCH_CONNECTED="no"
+	echo -n "Waiting for ElasticSearch..."
+	while [[ "$COUNT" -le 480 ]]; do
+		curl ${ELASTICSEARCH_AUTH} --output /dev/null --silent --head --fail http://"$ELASTICSEARCH_HOST":"$ELASTICSEARCH_PORT"
+		if [ $? -eq 0 ]; then
+			ELASTICSEARCH_CONNECTED="yes"
+			echo "connected!"
+			break
+		else
+			((COUNT+=1))
+			sleep 1
+			echo -n "."
+		fi
+	done
+	if [ "$ELASTICSEARCH_CONNECTED" == "no" ]; then
+		echo
+		echo -e "Connection attempt timed out.  Unable to connect to ElasticSearch.  \nPlease try: \n  -checking log(s) in /var/log/elasticsearch/\n  -running 'sudo docker ps' \n  -running 'sudo so-elastic-restart'" 
+		echo
+
+	else
+
+
+		curl -XDELETE $ELASTICSEARCH_AUTH $ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_template/logstash 
+		curl -XDELETE $ELASTICSEARCH_AUTH $ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_template/logstash-*
+
+		echo; echo
+		header "Old logstash templates removed!"
+		echo
+
+	fi
+
+fi
