@@ -20,7 +20,7 @@
 . /etc/nsm/securityonion.conf
 
 # Check for error conditions
-if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ -f $ELASTICSEARCH_ACCOUNTS ]; then
+if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] ; then
 
 	echo
 	header "Removing old logstash templates..."
