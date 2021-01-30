@@ -97,7 +97,7 @@ if ! grep -q "xpack.security.enabled:" $ELASTICSEARCH_YML; then
 	rm -f /var/log/elasticsearch/${CLUSTER_NAME}.log
 	echo -n "Please wait while restarting Elasticsearch..."
 	/usr/sbin/so-elasticsearch-restart >/dev/null
-        until fgrep -qs "Cluster health status changed from [RED] to [GREEN]" /var/log/elasticsearch/${CLUSTER_NAME}.log; do
+        until fgrep -qs " indices into cluster_state" /var/log/elasticsearch/${CLUSTER_NAME}.log; do
                 echo -n "."
                 sleep 1s
         done
