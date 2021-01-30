@@ -129,8 +129,8 @@ curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEAR
   "cluster": ["manage_index_templates", "monitor", "manage_ilm"], 
   "indices": [
     {
-      "names": [ "logstash-*" ], 
-      "privileges": ["write","delete","create_index","manage","manage_ilm"]  
+      "names": [ "logstash*" ], 
+      "privileges": ["write","create","delete","create_index","manage","manage_ilm"]  
     }
   ]
 }

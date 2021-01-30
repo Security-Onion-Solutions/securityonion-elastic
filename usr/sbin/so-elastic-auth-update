@@ -70,6 +70,19 @@ if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ 
   ]
 }
 '
+
+		curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/logstash_writer" -H 'Content-Type: application/json' -d'
+{
+  "cluster": ["manage_index_templates", "monitor", "manage_ilm"], 
+  "indices": [
+    {
+      "names": [ "logstash*" ], 
+      "privileges": ["write","create","delete","create_index","manage","manage_ilm"]  
+    }
+  ]
+}
+'
+
 		echo; echo
 		header "Elastic auth config update complete!"
 		echo
