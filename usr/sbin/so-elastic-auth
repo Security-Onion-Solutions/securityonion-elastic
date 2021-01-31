@@ -97,7 +97,7 @@ if ! grep -q "xpack.security.enabled:" $ELASTICSEARCH_YML; then
 	rm -f /var/log/elasticsearch/${CLUSTER_NAME}.log
 	echo -n "Please wait while restarting Elasticsearch..."
 	/usr/sbin/so-elasticsearch-restart >/dev/null
-        until fgrep -qs " indices into cluster_state" /var/log/elasticsearch/${CLUSTER_NAME}.log; do
+        until fgrep -qs "Cluster health status changed from [RED] to [GREEN]" /var/log/elasticsearch/${CLUSTER_NAME}.log; do
                 echo -n "."
                 sleep 1s
         done
@@ -124,7 +124,7 @@ echo
 ELASTICSEARCH_PASSWORD=$(grep "PASSWORD elastic = " $ELASTICSEARCH_ACCOUNTS | awk '{print $4}')
 
 echo "Creating logstash_writer role..."
-curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/logstash_writer" -H 'Content-Type: application/json' -d'
+curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/role/logstash_writer" -H 'Content-Type: application/json' -d'
 {
   "cluster": ["manage_index_templates", "monitor", "manage_ilm"], 
   "indices": [
@@ -141,7 +141,7 @@ echo "Creating logstash_internal user and giving it the logstash_writer role..."
 LOGSTASH_PASSWORD=$(cat /dev/urandom | base64 | head -c 20)
 echo "PASSWORD logstash_internal = $LOGSTASH_PASSWORD" >> $ELASTICSEARCH_ACCOUNTS
 echo "" >> $ELASTICSEARCH_ACCOUNTS
-curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/user/logstash_internal" -H 'Content-Type: application/json' -d"
+curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/user/logstash_internal" -H 'Content-Type: application/json' -d"
 {
   \"password\" : \"$LOGSTASH_PASSWORD\",
   \"roles\" : [ \"logstash_writer\"]
@@ -153,7 +153,7 @@ echo; echo
 /usr/sbin/so-logstash-restart
 
 echo "Creating so_pcap role..."
-curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/so_pcap" -H 'Content-Type: application/json' -d'
+curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/role/so_pcap" -H 'Content-Type: application/json' -d'
 {
   "indices": [
     {
@@ -167,7 +167,7 @@ echo; echo
 
 echo "Creating so_pcap user and giving it the so_pcap role..."
 SO_PCAP_PASSWORD=$(cat /dev/urandom | base64 | head -c 20)
-curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/user/so_pcap" -H 'Content-Type: application/json' -d"
+curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/user/so_pcap" -H 'Content-Type: application/json' -d"
 {
   \"password\" : \"$SO_PCAP_PASSWORD\",
   \"roles\" : [ \"so_pcap\" ]
@@ -187,7 +187,7 @@ cat << EOF >> $ELASTICSEARCH_PCAP
 EOF
 
 echo "Creating so_user_read_only role..."
-curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/so_user_read_only" -H 'Content-Type: application/json' -d'
+curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/role/so_user_read_only" -H 'Content-Type: application/json' -d'
 {
   "indices": [
     {
@@ -215,7 +215,7 @@ echo
 mysql --defaults-file=/etc/mysql/debian.cnf -Dsecurityonion_db -N -e 'select username from user_info where username != "auto" and password != "LOCKED";' | while read USERNAME; do
 	PASSWORD=$(cat /dev/urandom | base64 | head -c 20)
 	echo "Username: $USERNAME     Password: $PASSWORD"
-	curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/user/$USERNAME" -H 'Content-Type: application/json' -d"
+	curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/user/$USERNAME" -H 'Content-Type: application/json' -d"
 {
   \"password\" : \"$PASSWORD\",
   \"roles\" : [ \"so_user_read_only\" ]

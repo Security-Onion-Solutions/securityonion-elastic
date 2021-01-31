@@ -49,7 +49,7 @@ if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ 
 	else
 
 
-		curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/so_user_read_only" -H 'Content-Type: application/json' -d'
+		curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/role/so_user_read_only" -H 'Content-Type: application/json' -d'
 {
   "indices": [
     {
@@ -71,7 +71,7 @@ if [ "$ELASTICSEARCH_ENABLED" == "yes" ] && [ "$KIBANA_ENABLED" == "yes" ] && [ 
 }
 '
 
-		curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_xpack/security/role/logstash_writer" -H 'Content-Type: application/json' -d'
+		curl -uelastic:$ELASTICSEARCH_PASSWORD -X POST "$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT/_security/role/logstash_writer" -H 'Content-Type: application/json' -d'
 {
   "cluster": ["manage_index_templates", "monitor", "manage_ilm"], 
   "indices": [

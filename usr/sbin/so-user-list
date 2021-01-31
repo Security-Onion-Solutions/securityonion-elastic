@@ -23,5 +23,5 @@ header "Sguil user accounts"
 if [ -f /etc/elasticsearch/elasticsearch_accounts ]; then
 	echo
 	header "Elastic user accounts"
-	so-elasticsearch-query _xpack/security/user 2>/dev/null| jq '.' |grep username |cut -d\" -f4
+	so-elasticsearch-query _security/user 2>/dev/null| jq '.' |grep username |cut -d\" -f4
 fi
